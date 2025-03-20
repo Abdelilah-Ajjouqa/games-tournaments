@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Post;
+use Exception;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
@@ -11,15 +13,9 @@ class PostController extends Controller
      */
     public function index()
     {
-        //
-    }
+        $posts = Post::all();
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        return response()->json($posts, 200);
     }
 
     /**
@@ -27,7 +23,30 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try{
+            $validate = $request->validate([
+                'title' => 'required|string|max:225|unique:posts',
+                'start_date' => 'required|date',
+                'end_date' => 'required|date',
+                'descritpion' => 'nullable|text'
+            ]);
+    
+            $post = Post::create([
+                'title' => $validate['title'],
+                'start_date' => $validate['start_date'],
+                'end_date' => $validate['end_date'],
+                'description' => $validate['description'] ?? null,
+            ]);
+    
+            if($post){
+                return response()->json(["message"=>"Post not created", "error"=>$post], 400);
+            }
+            
+            return response()->json($post, 201);
+
+        } catch(\Exception $e){
+            return response()->json(["message"=>"error", "error"=> $e->getMessage()], 404);
+        }
     }
 
     /**
@@ -35,15 +54,17 @@ class PostController extends Controller
      */
     public function show(string $id)
     {
-        //
-    }
+        try{
+            $post = Post::findOrFail($id);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
+            if(!$post){
+                return response()->json(["message"=>"the post not found"], 400);
+            }
+
+            return response()->json($post, 200);
+        } catch(Exception $e){
+            return response()->json(["message"=>"error", "error"=> $e->getMessage()], 404);
+        }
     }
 
     /**
@@ -51,7 +72,26 @@ class PostController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        try{
+            $post = Post::findOrFail($id);
+
+            if(!$post){
+                return response()->json(["message"=>"the post not found"], 400);
+            }
+
+            $validate = $request->validate([
+                'title'=>'sometimes|string|max:225|unique:posts',
+                'start_date'=>'sometimes|date',
+                'end_date'=>'sometimes|date',
+                'description'=>'sometimes|nullable'
+            ]);
+
+            $post = Post::update($validate);
+
+            return response()->json($post, 200);
+        } catch(Exception $e){
+            return response()->json(["message"=>"error", "error"=> $e->getMessage()], 404);
+        }
     }
 
     /**
@@ -59,6 +99,18 @@ class PostController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        try{
+            $post = Post::findOrFail($id);
+
+            if(!$post){
+                return response()->json(["message"=>"the post not found"], 400);
+            }
+
+            $post->delete();
+
+            return response()->json(null, 204);
+        } catch(Exception $e){
+            return response()->json(["message"=>"error", "error"=> $e->getMessage()], 404);
+        }
     }
 }
