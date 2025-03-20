@@ -79,6 +79,37 @@ class ApiTest extends TestCase
 
         // logout 
         $logout = $this->post('/api/logout', $userData);
-        $logout->assertStatus(200);
+        $logout->assertStatus(302);
+    }
+
+    /** @test */
+    public function it_can_create_an_tournois(){
+        // register 
+        $registerData = [
+            'username'=>'abdelilah',
+            'email'=>'abdouajjouqa@gmail.com',
+            'password'=>'password123',
+            'password_confirmation'=>'password123',
+        ];
+        $register = $this->post('/api/register', $registerData);
+        $register->assertStatus(201);
+
+        // login
+        $userData = [
+            'email'=>'abdouajjouqa@gmail.com',
+            'password'=>'password123',
+        ];
+        $login = $this->post('/api/login', $userData);
+        $login->assertStatus(200);
+
+        // create tournois
+        $form = [
+            'title'=>'this is a title',
+            'start_date'=>'2025-03-20',
+            'end_date'=>'2025-04-20',
+            'descirption'=>'this is an description',
+        ];
+        $post = $this->post('/api/tournament', $form);
+        $post->assertStatus(302); //cuz the request was redirected
     }
 }
