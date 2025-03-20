@@ -103,15 +103,25 @@ class ApiTest extends TestCase
         ];
         $login = $this->post('/api/login', $userData);
         $login->assertStatus(200);
+        
+        // get the token
+        $token = json_decode($login->getContent())->token;
 
         // create tournois
         $form = [
             'title' => 'this is a title',
             'start_date' => '2025-03-20',
             'end_date' => '2025-04-20',
-            'descirption' => 'this is an description',
+            'description' => 'this is a description',
         ];
-        $post = $this->post('/api/tournament', $form);
-        $post->assertStatus(302); //cuz the request was redirected
+        
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $token,
+            'Accept' => 'application/json',
+        ])->post('/api/tournament', $form);
+
+        // dd($response->getContent());
+
+        $response->assertStatus(201);
     }
 }
