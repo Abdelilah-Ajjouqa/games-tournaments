@@ -56,4 +56,29 @@ class ApiTest extends TestCase
         $register->assertStatus(201);
         $response->assertStatus(200);
     }
+
+    /** @test */
+    public function it_can_logout(){
+        // register 
+        $registerData = [
+            'username'=>'abdelilah',
+            'email'=>'abdouajjouqa@gmail.com',
+            'password'=>'password123',
+            'password_confirmation'=>'password123',
+        ];
+        $register = $this->post('/api/register', $registerData);
+        $register->assertStatus(201);
+
+        // login
+        $userData = [
+            'email'=>'abdouajjouqa@gmail.com',
+            'password'=>'password123',
+        ];
+        $login = $this->post('/api/login', $userData);
+        $login->assertStatus(200);
+
+        // logout 
+        $logout = $this->post('/api/logout', $userData);
+        $logout->assertStatus(200);
+    }
 }
