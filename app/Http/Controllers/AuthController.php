@@ -14,7 +14,7 @@ class AuthController extends Controller
     public function register(Request $request){
         try {
             $validate = Validator::make($request->all(), [
-                'name' => 'required|string|max:225|unique:users',
+                'username' => 'required|string|max:225|unique:users',
                 'email' => 'required|email|string|max:225|unique:users',
                 'password' => 'required|string|min:8|confirmed',
             ]);
@@ -24,7 +24,7 @@ class AuthController extends Controller
             }
 
             $user = User::create([
-                'name' => $request->username,
+                'username' => $request->username,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
             ]);
