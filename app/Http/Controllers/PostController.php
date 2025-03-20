@@ -78,7 +78,7 @@ class PostController extends Controller
                 'description'=>'sometimes|nullable'
             ]);
 
-            $post = Post::update($validate);
+            $post->update($validate);
 
             return response()->json($post, 200);
         } catch(Exception $e){
