@@ -57,10 +57,6 @@ class PostController extends Controller
         try{
             $post = Post::findOrFail($id);
 
-            if(!$post){
-                return response()->json(["message"=>"the post not found"], 400);
-            }
-
             return response()->json($post, 200);
         } catch(Exception $e){
             return response()->json(["message"=>"error", "error"=> $e->getMessage()], 404);
@@ -74,10 +70,6 @@ class PostController extends Controller
     {
         try{
             $post = Post::findOrFail($id);
-
-            if(!$post){
-                return response()->json(["message"=>"the post not found"], 400);
-            }
 
             $validate = $request->validate([
                 'title'=>'sometimes|string|max:225|unique:posts',
@@ -101,10 +93,6 @@ class PostController extends Controller
     {
         try{
             $post = Post::findOrFail($id);
-
-            if(!$post){
-                return response()->json(["message"=>"the post not found"], 400);
-            }
 
             $post->delete();
 
