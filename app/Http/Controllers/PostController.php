@@ -28,7 +28,7 @@ class PostController extends Controller
                 'title' => 'required|string|max:225|unique:posts',
                 'start_date' => 'required|date',
                 'end_date' => 'required|date',
-                'descritpion' => 'nullable|text'
+                'description' => 'nullable'
             ]);
     
             $post = Post::create([
@@ -38,7 +38,7 @@ class PostController extends Controller
                 'description' => $validate['description'] ?? null,
             ]);
     
-            if($post){
+            if(!$post){
                 return response()->json(["message"=>"Post not created", "error"=>$post], 400);
             }
             
