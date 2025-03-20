@@ -12,4 +12,8 @@ class Post extends Model
     'end_date',
     'description',
     ];
+
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
 }
