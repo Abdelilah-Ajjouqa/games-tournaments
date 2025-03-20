@@ -5,6 +5,11 @@ use App\Http\Controllers\PostController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+// index route
+Route::get('/', function(){
+    return response()->json(["message"=>"welcome page"], 200);
+});
+
 // Auth routes
 Route::post('/register', [AuthController::class, 'register'])->name('register');
 Route::post('/login', [AuthController::class, 'login'])->name('login');
