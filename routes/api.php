@@ -23,5 +23,5 @@ Route::get('/tournament/{id}', [PostController::class, 'show'])->name('show');
 Route::middleware('auth:sanctum')->group(function(){
     Route::post('/tournament', [PostController::class, 'store'])->name('store');
     Route::put('tournament/{id}', [PostController::class, 'update'])->name('update');
-    Route::delete('/tounrament/{id}', [PostController::class, 'destroy'])->name('destroy');
+    Route::delete('/tournament/{id}', [PostController::class, 'destroy'])->name('destroy');
 });

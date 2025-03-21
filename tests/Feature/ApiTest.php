@@ -137,4 +137,21 @@ class ApiTest extends TestCase
         ])->put('/api/tournament/' . $tournament['id'], $form);
         $response->assertStatus(200);
     }
+
+
+
+
+    /** @test */
+    public function it_can_delete_a_tournament()
+    {
+        $this->registerUser();
+        $this->loginUser();
+        $tournament = $this->createTournament();
+        $token = $this->getToken();
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $token,
+            'Accept' => 'application/json',
+        ])->delete('/api/tournament/' . $tournament['id']);
+        $response->assertStatus(204);
+    }
 }
