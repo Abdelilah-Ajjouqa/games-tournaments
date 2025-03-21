@@ -100,6 +100,21 @@ class ApiTest extends TestCase
         $response->assertStatus(201);
     }
 
+    private function createTournament(){
+        $token = $this->getToken();
+        $form = [
+            'title' => 'Tournament Title',
+            'start_date' => '2025-03-20',
+            'end_date' => '2025-04-20',
+            'description' => 'Tournament description',
+        ];
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $token,
+            'Accept' => 'application/json',
+        ])->post('/api/tournament', $form);
+        return json_decode($response->getContent(), true);
+    }
+
 
 
 
@@ -107,30 +122,19 @@ class ApiTest extends TestCase
     public function it_can_update_a_tournament()
     {
         $this->registerUser();
-        $token = $this->loginUser();
-
-        // Create Tournament
+        $this->loginUser();
+        $tournament = $this->createTournament();
+        $token = $this->getToken();
         $form = [
-            'title' => 'Tournament Title',
+            'title' => 'Tournament Title Updated',
             'start_date' => '2025-03-20',
             'end_date' => '2025-04-20',
-            'description' => 'Tournament description',
+            'description' => 'Tournament description updated',
         ];
-        $create = $this->withHeaders([
+        $response = $this->withHeaders([
             'Authorization' => 'Bearer ' . $token,
-        ])->post('/api/tournament', $form);
-        $create->assertStatus(201);
-
-        // Update Tournament
-        $updateForm = [
-            'title' => 'Updated Title',
-            'start_date' => '2025-03-20',
-            'end_date' => '2025-04-30',
-            'description' => 'Updated Description',
-        ];
-        $postUpdated = $this->withHeaders([
-            'Authorization' => 'Bearer ' . $token,
-        ])->put('/api/tournament/{id}', $updateForm);
-        $postUpdated->assertStatus(200);
+            'Accept' => 'application/json',
+        ])->put('/api/tournament/' . $tournament['id'], $form);
+        $response->assertStatus(200);
     }
 }
