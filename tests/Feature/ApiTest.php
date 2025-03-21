@@ -4,7 +4,6 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class ApiTest extends TestCase
@@ -15,113 +14,113 @@ class ApiTest extends TestCase
     public function home(): void
     {
         $response = $this->get('/');
-
         $response->assertStatus(200);
     }
 
     /** @test */
     public function it_can_register()
     {
+        $response = $this->registerUser();
+        $response->assertStatus(201);
+    }
 
+    private function registerUser()
+    {
         $userData = [
             'username' => 'abdelilah',
             'email' => 'abdouajjouqa@gmail.com',
             'password' => 'password123',
             'password_confirmation' => 'password123',
         ];
-
-        $response = $this->post('/api/register', $userData);
-
-        $response->assertStatus(201);
+        return $this->post('/api/register', $userData);
     }
+
+
+
 
     /** @test */
     public function it_can_login()
     {
-        // register
-        $registerData = [
-            'username' => 'abdelilah',
-            'email' => 'abdouajjouqa@gmail.com',
-            'password' => 'password123',
-            'password_confirmation' => 'password123',
-        ];
-        $register = $this->post('/api/register', $registerData);
-        $register->assertStatus(201);
+        $this->registerUser();
+        $response = $this->loginUser();
+        $response->assertStatus(200);
+    }
 
-        // login
+    private function loginUser()
+    {
         $userData = [
             'email' => 'abdouajjouqa@gmail.com',
             'password' => 'password123',
         ];
         $response = $this->post('/api/login', $userData);
-        $response->assertStatus(200);
+        return json_decode($response->getContent())->token ?? null;
     }
+
+
+
 
     /** @test */
     public function it_can_logout()
     {
-        // register 
-        $registerData = [
-            'username' => 'abdelilah',
-            'email' => 'abdouajjouqa@gmail.com',
-            'password' => 'password123',
-            'password_confirmation' => 'password123',
-        ];
-        $register = $this->post('/api/register', $registerData);
-        $register->assertStatus(201);
-
-        // login
-        $userData = [
-            'email' => 'abdouajjouqa@gmail.com',
-            'password' => 'password123',
-        ];
-        $login = $this->post('/api/login', $userData);
-        $login->assertStatus(200);
-
-        // logout 
-        $logout = $this->post('/api/logout', $userData);
-        $logout->assertStatus(302);
-    }
-
-    /** @test */
-    public function it_can_create_an_tournois()
-    {
-        // register 
-        $registerData = [
-            'username' => 'abdelilah',
-            'email' => 'abdouajjouqa@gmail.com',
-            'password' => 'password123',
-            'password_confirmation' => 'password123',
-        ];
-        $register = $this->post('/api/register', $registerData);
-        $register->assertStatus(201);
-
-        // login
-        $userData = [
-            'email' => 'abdouajjouqa@gmail.com',
-            'password' => 'password123',
-        ];
-        $login = $this->post('/api/login', $userData);
-        $login->assertStatus(200);
-        
-        // get the token
-        $token = json_decode($login->getContent())->token;
-
-        // create tournois
-        $form = [
-            'title' => 'this is a title',
-            'start_date' => '2025-03-20',
-            'end_date' => '2025-04-20',
-            'description' => 'this is a description',
-        ];
-        
+        $this->registerUser();
+        $token = $this->loginUser();
         $response = $this->withHeaders([
             'Authorization' => 'Bearer ' . $token,
-            'Accept' => 'application/json',
+        ])->post('/api/logout');
+        $response->assertStatus(302);
+    }
+
+
+
+
+    /** @test */
+    public function it_can_create_a_tournament()
+    {
+        $this->registerUser();
+        $token = $this->loginUser();
+        $form = [
+            'title' => 'Tournament Title',
+            'start_date' => '2025-03-20',
+            'end_date' => '2025-04-20',
+            'description' => 'Tournament description',
+        ];
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $token,
         ])->post('/api/tournament', $form);
-
-        // dd($response->getContent());
-
         $response->assertStatus(201);
+    }
+
+
+
+
+    /** @test */
+    public function it_can_update_a_tournament()
+    {
+        $this->registerUser();
+        $token = $this->loginUser();
+
+        // Create Tournament
+        $form = [
+            'title' => 'Tournament Title',
+            'start_date' => '2025-03-20',
+            'end_date' => '2025-04-20',
+            'description' => 'Tournament description',
+        ];
+        $create = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $token,
+        ])->post('/api/tournament', $form);
+        $create->assertStatus(201);
+
+        // Update Tournament
+        $updateForm = [
+            'title' => 'Updated Title',
+            'start_date' => '2025-03-20',
+            'end_date' => '2025-04-30',
+            'description' => 'Updated Description',
+        ];
+        $postUpdated = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $token,
+        ])->put('/api/tournament/{id}', $updateForm);
+        $postUpdated->assertStatus(200);
     }
 }
