@@ -154,4 +154,16 @@ class ApiTest extends TestCase
         ])->delete('/api/tournament/' . $tournament['id']);
         $response->assertStatus(204);
     }
+
+
+
+    // users tests
+    /** @test */
+    public function it_can_list_tournaments()
+    {
+        $response = $this->withHeaders([
+            'Accept' => 'application/json',
+        ])->get('/api/tournaments');
+        $response->assertStatus(200);
+    }
 }
