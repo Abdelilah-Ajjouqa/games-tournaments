@@ -71,14 +71,19 @@ class PostController extends Controller
         try{
             $post = Post::findOrFail($id);
 
-            $validate = $request->validate([
+            $request->validate([
                 'title'=>'sometimes|string|max:225|unique:posts',
                 'start_date'=>'sometimes|date',
                 'end_date'=>'sometimes|date',
                 'description'=>'sometimes|nullable'
             ]);
 
-            $post->update($validate);
+            $post->title = $request->title;
+            $post->start_date = $request->start_date;
+            $post->end_date = $request->end_date;
+            $post->description = $request->description;
+
+            $post->save();
 
             return response()->json($post, 200);
         } catch(Exception $e){
