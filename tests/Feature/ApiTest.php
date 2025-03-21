@@ -44,6 +44,9 @@ class ApiTest extends TestCase
         $this->registerUser();
         $response = $this->loginUser();
         $response->assertStatus(200);
+
+        $responseData = json_decode($response->getContent(), true);
+        $this->assertArrayHasKey('token', $responseData);
     }
 
     private function loginUser()
@@ -52,8 +55,13 @@ class ApiTest extends TestCase
             'email' => 'abdouajjouqa@gmail.com',
             'password' => 'password123',
         ];
-        $response = $this->post('/api/login', $userData);
-        return json_decode($response->getContent())->token ?? null;
+        return $this->post('/api/login', $userData);
+    }
+
+    private function getToken()
+    {
+        $response = $this->loginUser();
+        return json_decode($response->getContent(), true)['token'];
     }
 
 
@@ -63,11 +71,11 @@ class ApiTest extends TestCase
     public function it_can_logout()
     {
         $this->registerUser();
-        $token = $this->loginUser();
+        $token = $this->getToken();
         $response = $this->withHeaders([
             'Authorization' => 'Bearer ' . $token,
         ])->post('/api/logout');
-        $response->assertStatus(302);
+        $response->assertStatus(200);
     }
 
 
@@ -77,7 +85,8 @@ class ApiTest extends TestCase
     public function it_can_create_a_tournament()
     {
         $this->registerUser();
-        $token = $this->loginUser();
+        $this->loginUser();
+        $token = $this->getToken();
         $form = [
             'title' => 'Tournament Title',
             'start_date' => '2025-03-20',
@@ -86,6 +95,7 @@ class ApiTest extends TestCase
         ];
         $response = $this->withHeaders([
             'Authorization' => 'Bearer ' . $token,
+            'Accept' => 'application/json',
         ])->post('/api/tournament', $form);
         $response->assertStatus(201);
     }
