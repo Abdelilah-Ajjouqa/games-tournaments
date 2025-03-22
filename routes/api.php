@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -24,4 +25,9 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::post('/tournament', [PostController::class, 'store'])->name('store');
     Route::put('tournament/{id}', [PostController::class, 'update'])->name('update');
     Route::delete('/tournament/{id}', [PostController::class, 'destroy'])->name('destroy');
+
+    // user's routes
+    Route::get('users/{id}', [UserController::class, 'show'])->name('profile.show');
+    Route::put('users/{id}', [UserController::class, 'update'])->name('profile.update');
+    Route::delete('users/{id}', [UserController::class, 'destroy'])->name('profile.destroy');
 });
