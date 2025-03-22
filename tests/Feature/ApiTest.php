@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Post;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -164,6 +165,23 @@ class ApiTest extends TestCase
         $response = $this->withHeaders([
             'Accept' => 'application/json',
         ])->get('/api/tournaments');
+        $response->assertStatus(200);
+    }
+
+
+
+    /** @test */
+    public function it_can_show_a_tournament()
+    {
+        $this->registerUser();
+        $this->loginUser();
+        $tournament = $this->createTournament();
+
+        // Test show the tournament as a guest
+        $response = $this->withHeaders([
+            'Accept' => 'application/json',
+        ])->getJson("/api/tournament/{$tournament['id']}");
+
         $response->assertStatus(200);
     }
 }
