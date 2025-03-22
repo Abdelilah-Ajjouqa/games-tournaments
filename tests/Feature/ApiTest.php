@@ -184,4 +184,22 @@ class ApiTest extends TestCase
 
         $response->assertStatus(200);
     }
+
+
+
+    /** @test */
+    public function it_can_update_profile(){
+        $this->registerUser();
+        $this->loginUser();
+        $token = $this->getToken();
+        $form = [
+            'username' => 'abdou',
+            // 'email' => 'abo@gmail.com',
+        ];
+        $response = $this->withHeaders([
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer ' . $token,
+        ])->put('/api/profile', $form);
+        $response->assertStatus(201);
+    }
 }
