@@ -27,7 +27,7 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::delete('/tournament/{id}', [PostController::class, 'destroy'])->name('destroy');
 
     // user's routes
-    Route::get('users/{id}', [UserController::class, 'show'])->name('profile.show');
-    Route::put('users/{id}', [UserController::class, 'update'])->name('profile.update');
-    Route::delete('users/{id}', [UserController::class, 'destroy'])->name('profile.destroy');
+    Route::get('profile/{id}', [UserController::class, 'show'])->name('profile.show');
+    Route::put('profile/{id}', [UserController::class, 'update'])->name('profile.update');
+    Route::delete('profile/{id}', [UserController::class, 'destroy'])->name('profile.destroy');
 });

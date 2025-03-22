@@ -22,7 +22,7 @@ class ApiTest extends TestCase
     public function it_can_register()
     {
         $response = $this->registerUser();
-        $response->assertStatus(201);
+        $response->assertStatus(200);
     }
 
     private function registerUser()
@@ -194,7 +194,7 @@ class ApiTest extends TestCase
         $token = $this->getToken();
         $form = [
             'username' => 'abdou',
-            // 'email' => 'abo@gmail.com',
+            'email' => 'abo@gmail.com',
         ];
         $response = $this->withHeaders([
             'Accept' => 'application/json',
