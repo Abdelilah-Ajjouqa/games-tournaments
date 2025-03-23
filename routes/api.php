@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PlayerController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -30,4 +31,9 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::get('profile/{id}', [UserController::class, 'show'])->name('profile.show');
     Route::put('profile/{id}', [UserController::class, 'update'])->name('profile.update');
     Route::delete('profile/{id}', [UserController::class, 'destroy'])->name('profile.destroy');
+
+    // players routes
+    Route::get('/tournament/{id}/players', [PlayerController::class, 'index'])->name('players.index');
+    Route::post('/tournament/{id}/players', [PlayerController::class, 'store'])->name('players.store');
+    Route::delete('/tournament/{id}/players', [PlayerController::class, 'destroy'])->name('players.destroy');
 });
