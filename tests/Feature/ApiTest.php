@@ -22,7 +22,7 @@ class ApiTest extends TestCase
     public function it_can_register()
     {
         $response = $this->registerUser();
-        $response->assertStatus(200);
+        $response->assertStatus(201);
     }
 
     private function registerUser()
@@ -188,10 +188,12 @@ class ApiTest extends TestCase
 
 
     /** @test */
-    public function it_can_update_profile(){
+    public function it_can_update_profile()
+    {
         $this->registerUser();
-        $this->loginUser();
         $token = $this->getToken();
+        $user = User::first(); // Get the authenticated user
+
         $form = [
             'username' => 'abdou',
             'email' => 'abo@gmail.com',
@@ -199,7 +201,23 @@ class ApiTest extends TestCase
         $response = $this->withHeaders([
             'Accept' => 'application/json',
             'Authorization' => 'Bearer ' . $token,
-        ])->put('/api/profile', $form);
-        $response->assertStatus(201);
+        ])->put("/api/profile/{$user->id}", $form);
+
+        $response->assertStatus(200);
+    }
+
+    /** @test */
+    public function it_can_delete_profile()
+    {
+        $this->registerUser();
+        $token = $this->getToken();
+        $user = User::first(); // Get the authenticated user
+
+        $response = $this->withHeaders([
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer ' . $token
+        ])->delete("/api/profile/{$user->id}");
+
+        $response->assertStatus(204);
     }
 }
