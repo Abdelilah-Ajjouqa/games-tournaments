@@ -240,16 +240,18 @@ class ApiTest extends TestCase
 
 
     /** @test */
-    public function it_can_participate_in_a_tournament()
+    public function it_can_list_players()
     {
         $this->registerUser();
         $this->loginUser();
         $tournament = $this->createTournament();
         $token = $this->getToken();
+
         $response = $this->withHeaders([
-            'Authorization' => 'Bearer ' . $token,
             'Accept' => 'application/json',
-        ])->post('/api/tournament/' . $tournament['id'] . '/players');
-        $response->assertStatus(201);
+            'Authorization' => 'Bearer ' . $token
+        ])->get("/api/tournament/{$tournament['id']}/players");
+
+        $response->assertStatus(200);
     }
 }
