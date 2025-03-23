@@ -35,5 +35,4 @@ Route::middleware('auth:sanctum')->group(function(){
     // players routes
     Route::get('/tournament/{id}/players', [PlayerController::class, 'index'])->name('players.index');
     Route::post('/tournament/{id}/players', [PlayerController::class, 'store'])->name('players.store');
-    Route::delete('/tournament/{id}/players', [PlayerController::class, 'destroy'])->name('players.destroy');
-});
+    Route::delete('/tournament/{tournament_id}/players/{player_id}', [PlayerController::class, 'destroy'])->name('players.destroy');});

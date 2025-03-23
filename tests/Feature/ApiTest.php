@@ -254,4 +254,59 @@ class ApiTest extends TestCase
 
         $response->assertStatus(200);
     }
+
+
+    /** @test */
+    public function it_can_create_a_player()
+    {
+        $this->registerUser();
+        $this->loginUser();
+        $tournament = $this->createTournament();
+        $token = $this->getToken();
+
+        $user = User::first();
+        $response = $this->withHeaders([
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer ' . $token
+        ])->post("/api/tournament/{$tournament['id']}/players", [
+            'user_id' => $user->id,
+        ]);
+
+        $response->assertStatus(201);
+    }
+
+
+
+    /** @test */
+    private function getPlayer()
+    {
+        $this->registerUser();
+        $this->loginUser();
+        $tournament = $this->createTournament();
+        $token = $this->getToken();
+
+        $user = User::first();
+        $response = $this->withHeaders([
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer ' . $token
+        ])->post("/api/tournament/{$tournament['id']}/players", [
+            'user_id' => $user->id,
+        ]);
+
+        return json_decode($response->getContent(), true);
+    }
+
+    /** @test */
+    public function it_can_delete_a_player()
+    {
+        $player = $this->getPlayer();
+        $token = $this->getToken();
+
+        $response = $this->withHeaders([
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer ' . $token
+        ])->delete("/api/tournament/{$player['tournament_id']}/players/{$player['id']}");
+
+        $response->assertStatus(200);
+    }
 }
