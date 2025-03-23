@@ -42,13 +42,15 @@ class PlayerController extends Controller
         }
     }
 
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
     public function destroy(string $id)
     {
-        //
+        try{
+            $player = Player::findOrFail($id);
+            $player->delete();
+
+            return response()->json(["message"=>"player deleted"], 200);
+        } catch(\Exception $e){
+            return response()->json(["message"=>"error", "error"=> $e->getMessage()], 404);
+        }
     }
 }
