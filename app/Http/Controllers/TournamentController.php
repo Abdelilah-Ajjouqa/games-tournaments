@@ -2,20 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Post;
+use App\Models\tournament;
 use Exception;
 use Illuminate\Http\Request;
 
-class PostController extends Controller
+class tournamentController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $posts = Post::all();
+        $tournaments = tournament::all();
 
-        return response()->json($posts, 200);
+        return response()->json($tournaments, 200);
     }
 
     /**
@@ -25,24 +25,24 @@ class PostController extends Controller
     {
         try{
             $validate = $request->validate([
-                'title' => 'required|string|max:225|unique:posts',
+                'title' => 'required|string|max:225|unique:tournaments',
                 'start_date' => 'required|date',
                 'end_date' => 'required|date',
                 'description' => 'nullable'
             ]);
-    
-            $post = Post::create([
+
+            $tournament = tournament::create([
                 'title' => $validate['title'],
                 'start_date' => $validate['start_date'],
                 'end_date' => $validate['end_date'],
                 'description' => $validate['description'] ?? null,
             ]);
-    
-            if(!$post){
-                return response()->json(["message"=>"Post not created", "error"=>$post], 400);
+
+            if(!$tournament){
+                return response()->json(["message"=>"tournament not created", "error"=>$tournament], 400);
             }
-            
-            return response()->json($post, 201);
+
+            return response()->json($tournament, 201);
 
         } catch(\Exception $e){
             return response()->json(["message"=>"error", "error"=> $e->getMessage()], 404);
@@ -55,9 +55,9 @@ class PostController extends Controller
     public function show(string $id)
     {
         try{
-            $post = Post::findOrFail($id);
+            $tournament = tournament::findOrFail($id);
 
-            return response()->json($post, 200);
+            return response()->json($tournament, 200);
         } catch(Exception $e){
             return response()->json(["message"=>"error", "error"=> $e->getMessage()], 404);
         }
@@ -69,23 +69,23 @@ class PostController extends Controller
     public function update(Request $request, string $id)
     {
         try{
-            $post = Post::findOrFail($id);
+            $tournament = tournament::findOrFail($id);
 
             $request->validate([
-                'title'=>'sometimes|string|max:225|unique:posts',
+                'title'=>'sometimes|string|max:225|unique:tournaments',
                 'start_date'=>'sometimes|date',
                 'end_date'=>'sometimes|date',
                 'description'=>'sometimes|nullable'
             ]);
 
-            $post->title = $request->title;
-            $post->start_date = $request->start_date;
-            $post->end_date = $request->end_date;
-            $post->description = $request->description;
+            $tournament->title = $request->title;
+            $tournament->start_date = $request->start_date;
+            $tournament->end_date = $request->end_date;
+            $tournament->description = $request->description;
 
-            $post->save();
+            $tournament->save();
 
-            return response()->json($post, 200);
+            return response()->json($tournament, 200);
         } catch(Exception $e){
             return response()->json(["message"=>"error", "error"=> $e->getMessage()], 404);
         }
@@ -97,9 +97,9 @@ class PostController extends Controller
     public function destroy(string $id)
     {
         try{
-            $post = Post::findOrFail($id);
+            $tournament = tournament::findOrFail($id);
 
-            $post->delete();
+            $tournament->delete();
 
             return response()->json(null, 204);
         } catch(Exception $e){

@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PlayerController;
-use App\Http\Controllers\PostController;
+use App\Http\Controllers\tournamentController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -18,14 +18,14 @@ Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
 // public routes
-Route::get('/tournaments', [PostController::class, 'index'])->name('index');
-Route::get('/tournament/{id}', [PostController::class, 'show'])->name('show');
+Route::get('/tournaments', [tournamentController::class, 'index'])->name('index');
+Route::get('/tournament/{id}', [tournamentController::class, 'show'])->name('show');
 
 
 Route::middleware('auth:sanctum')->group(function(){
-    Route::post('/tournament', [PostController::class, 'store'])->name('store');
-    Route::put('tournament/{id}', [PostController::class, 'update'])->name('update');
-    Route::delete('/tournament/{id}', [PostController::class, 'destroy'])->name('destroy');
+    Route::post('/tournament', [tournamentController::class, 'store'])->name('store');
+    Route::put('tournament/{id}', [tournamentController::class, 'update'])->name('update');
+    Route::delete('/tournament/{id}', [tournamentController::class, 'destroy'])->name('destroy');
 
     // user's routes
     Route::get('profile/{id}', [UserController::class, 'show'])->name('profile.show');
