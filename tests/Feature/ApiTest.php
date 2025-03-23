@@ -192,7 +192,7 @@ class ApiTest extends TestCase
     {
         $this->registerUser();
         $token = $this->getToken();
-        $user = User::first(); // Get the authenticated user
+        $user = User::first();
 
         $form = [
             'username' => 'abdou',
@@ -211,7 +211,7 @@ class ApiTest extends TestCase
     {
         $this->registerUser();
         $token = $this->getToken();
-        $user = User::first(); // Get the authenticated user
+        $user = User::first();
 
         $response = $this->withHeaders([
             'Accept' => 'application/json',
@@ -219,5 +219,22 @@ class ApiTest extends TestCase
         ])->delete("/api/profile/{$user->id}");
 
         $response->assertStatus(204);
+    }
+
+
+
+    /** @test */
+    public function it_can_show_profile()
+    {
+        $this->registerUser();
+        $token = $this->getToken();
+        $user = User::first();
+
+        $response = $this->withHeaders([
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer ' . $token
+        ])->get("/api/profile/{$user->id}");
+
+        $response->assertStatus(200);
     }
 }
